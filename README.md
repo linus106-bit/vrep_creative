@@ -3,4 +3,4 @@
 
 ## Install
 ### V-REP Simulation
-Change the vrep_path of vrep_creative_bringup/launch/vrep.launch + bringup.launch to YOURPATH 
+Change the vrep_path of vrep_creative_bringup/launch/vrep.launch & bringup.launch to YOURPATH 
