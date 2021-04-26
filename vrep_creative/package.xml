@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>vrep_creative</name>
+  <version>0.0.0</version>
+  <description>The vrep_creative package</description>
+  <maintainer email="linus@todo.todo">linus</maintainer>
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>vrep_creative_bringup</exec_depend>
+  <exec_depend>vrep_creative_description</exec_depend>
+  <export>
+    <metapackage/>
+  </export>
+</package>

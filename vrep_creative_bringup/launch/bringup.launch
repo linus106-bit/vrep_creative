@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="robot" default="creative"/>
+  <arg name="paused" default="false"/>
+  <arg name="auto_quit" default="true"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+
+  <arg name="vrep_path" default="/vrep"/>
+  <arg name="vrep_scene_file" default="$(find vrep_creative_bringup)/scenes/empty.ttt"/>
+
+  <arg name="init_pos_x" default="0.0"/>
+  <arg name="init_pos_y" default="0.0"/>
+  <arg name="init_pos_z" default="0.0"/>
+  <arg name="init_roll" default="0"/>
+  <arg name="init_pitch" default="0"/>
+  <arg name="init_yaw" default="0"/>
+
+ <!-- Launch v-rep -->
+  <include file="$(find vrep_creative_bringup)/launch/vrep.launch">
+ <arg name="vrep_path" value="$(arg vrep_path)"/>
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="scene_file" value="$(arg vrep_scene_file)"/>
+    <arg name="auto_quit" value="$(arg auto_quit)"/>
+  </include>
+
+  <!-- Robot model -->
+  <include file="$(find vrep_creative_bringup)/launch/model.launch">
+	<arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="init_pos_x" value="$(arg init_pos_x)"/>
+    <arg name="init_pos_y" value="$(arg init_pos_y)"/>
+    <arg name="init_pos_z" value="$(arg init_pos_z)"/>
+    <arg name="init_roll"  value="$(arg init_roll)"/>
+    <arg name="init_pitch" value="$(arg init_pitch)"/>
+    <arg name="init_yaw"   value="$(arg init_yaw)"/>
+  </include>
+  
+</launch>
