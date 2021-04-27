@@ -1,5 +1,4 @@
-# vrep_creative
-## For Creative Design Project 3
+# Vrep Simulation for Creative Design Project 3
 
 ## Install
 ### V-REP Simulation
