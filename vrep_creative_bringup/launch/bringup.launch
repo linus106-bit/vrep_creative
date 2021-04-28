@@ -25,16 +25,5 @@
     <arg name="scene_file" value="$(arg scene_file)"/>
     <arg name="auto_quit" value="$(arg auto_quit)"/>
   </include>
-
-  <!-- Robot model -->
-  <include file="$(find vrep_creative_bringup)/launch/model.launch">
-	<arg name="use_sim_time" value="$(arg use_sim_time)"/>
-    <arg name="init_pos_x" value="$(arg init_pos_x)"/>
-    <arg name="init_pos_y" value="$(arg init_pos_y)"/>
-    <arg name="init_pos_z" value="$(arg init_pos_z)"/>
-    <arg name="init_roll"  value="$(arg init_roll)"/>
-    <arg name="init_pitch" value="$(arg init_pitch)"/>
-    <arg name="init_yaw"   value="$(arg init_yaw)"/>
-  </include>
   
 </launch>
