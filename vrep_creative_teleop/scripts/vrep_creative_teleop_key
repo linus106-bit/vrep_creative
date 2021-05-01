@@ -32,6 +32,10 @@ from geometry_msgs.msg import Twist
 from geometry_msgs.msg import Point
 from std_msgs.msg import Float32MultiArray
 import sys, select, termios, tty
+import csv
+import os, rospkg
+rospack = rospkg.RosPack()
+
 
 MAX_LIN_VEL = 0.8
 MAX_ANG_VEL = 1.5488
@@ -101,13 +105,15 @@ def checkAngularLimitVelocity(vel):
     return vel
 def positionCallback(input): # Get Position value from topic /sim_ros_interface/sauce_pos
     global index
+    global burner_length
     try:
-        burner_list.data[index][0] = input.x
-        burner_list.data[index][1] = input.y
-        burner_list.data[index][2] = input.z
+        # print(type(input.x))
+        burner_data[index][0] = input.x
+        burner_data[index][1] = input.y
+        burner_data[index][2] = input.z
     except IndexError:
         print "No more burners ALLOWED"
-        index = 3 # To Prevent IndexError Again (Will change it later)
+        index = burner_length -1 # To Prevent IndexError Again (Will change it later)
 
 
 if __name__=="__main__":
@@ -125,14 +131,13 @@ if __name__=="__main__":
     control_linear_vel_y  = 0.0
     control_angular_vel = 0.0
 
+    # Init burner_list
     burner_length = input("# of Burner? ") # Get the # of burner
-    burner_list = Float32MultiArray() # To publish the topic burner_pub
-    burner_list.data = [[0 for i in range(3)] for j in range(burner_length)]
-    # burner_list = [[0,0,0],[0,0,0] ... [0,0,0]] index range = burner_length
-
+    burner_data = [[float(0) for i in range(3)] for j in range(burner_length)]
+    burner_array = []
+    # burner_data: [[0,0,0],[0,0,0], ... ,[0,0,0]] index range = burner_length
     # Subscribe the Topic
     rospy.Subscriber("/sim_ros_interface/sauce_pos", Point, positionCallback, queue_size=10)
-
 
     try:
         print msg
@@ -171,9 +176,13 @@ if __name__=="__main__":
                 control_angular_vel = 0.0
                 print vels(target_linear_vel_x,target_linear_vel_y,target_angular_vel)
 
-            elif key == 'i': # i from "i"nitialization 
+            elif key == 'i': # i from "i"nitialization
+                burner_array = []
+                for i in range(burner_length):
+                    print("{0}_burner : {1}".format(i+1,burner_data[i]))
+                    for j in range(3):
+                        burner_array.append(burner_data[i][j])
                 index += 1 # Update Index
-                print(burner_list.data)
 
             else:
                 if (key == '\x03'):
@@ -191,9 +200,14 @@ if __name__=="__main__":
 
             control_angular_vel = makeSimpleProfile(control_angular_vel, target_angular_vel, (ANG_VEL_STEP_SIZE/2.0))
             twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = control_angular_vel
-
+            burner_list = Float32MultiArray(data=burner_array) # To publish the topic burner_pub
+            # burner_list : [burner_1.x , burner_1.y, burner_1.z, burner_2.x, ... , burner_n.z]
+            
             cmd_pub.publish(twist)
             burner_pub.publish(burner_list)
+            with open(os.path.join(rospack.get_path("vrep_creative_description"), "position", "init_pos.csv"), 'w') as f:
+                writer = csv.writer(f)
+                writer.writerow(burner_array)
     except:
         print e
 
