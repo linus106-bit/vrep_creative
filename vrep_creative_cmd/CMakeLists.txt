@@ -20,7 +20,7 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS
-  scripts/vrep_creative_cmd_node.py
+  scripts/vrep_creative_cmd_node
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
