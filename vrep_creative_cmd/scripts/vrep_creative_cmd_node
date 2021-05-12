@@ -18,16 +18,16 @@ rospack = rospkg.RosPack()
 
 if __name__=="__main__":
     rospy.init_node('sauce_cmd')
-    sauce_input = [1,15,4]
+    sauce_input = [1,15,1]
     sauce_pos = open(os.path.join(rospack.get_path("vrep_creative_description"), "position", "init_pos.csv"), 'r')
     reader = csv.reader(sauce_pos)
     lines = list(reader)
     # group_pub = rospy.Publisher('group_pos',Point,queue_size=1)
     group_num = rospy.Publisher('group_num',Float32MultiArray,queue_size=1)
     group_pos = Point()
-    sauce_input.append(float(lines[0][3*sauce_input[0]-3]))
-    sauce_input.append(float(lines[0][3*sauce_input[0]-2]))
-    sauce_input.append(float(lines[0][3*sauce_input[0]-1]))
+    sauce_input.append(float(lines[0][3*sauce_input[2]-3]))
+    sauce_input.append(float(lines[0][3*sauce_input[2]-2]))
+    sauce_input.append(float(lines[0][3*sauce_input[2]-1]))
     print("Sauce # : {}".format(sauce_input[0]))
     print("Sauce Weight: {}(g)".format(sauce_input[1]))
     print("Burner # : {}".format(sauce_input[2]))
