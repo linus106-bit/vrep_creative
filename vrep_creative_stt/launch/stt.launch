@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="vrep_creative_stt" type="vrep_creative_stt_node" name="vrep_creative_stt_node" output="screen">
+  </node>
+</launch>

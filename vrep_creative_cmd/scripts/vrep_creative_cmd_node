@@ -10,30 +10,33 @@ from geometry_msgs.msg import Point
 
 
 rospack = rospkg.RosPack()
-
-# def sauce_callback(input):
-
-
-
-
-if __name__=="__main__":
-    rospy.init_node('sauce_cmd')
-    sauce_input = [1,15,1]
+sauce_input = []
+def stt_callback(input):
+    sauce_input = list(input.data)
     sauce_pos = open(os.path.join(rospack.get_path("vrep_creative_description"), "position", "init_pos.csv"), 'r')
     reader = csv.reader(sauce_pos)
     lines = list(reader)
-    # group_pub = rospy.Publisher('group_pos',Point,queue_size=1)
+
     group_num = rospy.Publisher('group_num',Float32MultiArray,queue_size=1)
-    group_pos = Point()
-    sauce_input.append(float(lines[0][3*sauce_input[2]-3]))
-    sauce_input.append(float(lines[0][3*sauce_input[2]-2]))
-    sauce_input.append(float(lines[0][3*sauce_input[2]-1]))
-    print("Sauce # : {}".format(sauce_input[0]))
-    print("Sauce Weight: {}(g)".format(sauce_input[1]))
-    print("Burner # : {}".format(sauce_input[2]))
-    print("Target position : ({0}, {1})".format(sauce_input[3],sauce_input[4]))
+
+    print("Sauce Input: ", sauce_input)
+    if(len(sauce_input) == 0):
+        pass
+    else:
+        sauce_input.append(float(lines[0][3*int(sauce_input[2])-3]))
+        sauce_input.append(float(lines[0][3*int(sauce_input[2])-2]))
+        sauce_input.append(float(lines[0][3*int(sauce_input[2])-1]))
+        print("Sauce # : {}".format(sauce_input[0]))
+        print("Sauce Weight: {}(g)".format(sauce_input[1]))
+        print("Burner # : {}".format(sauce_input[2]))
+        print("Target position : ({0}, {1})".format(sauce_input[3],sauce_input[4]))
     while not rospy.is_shutdown():
-        # group_pub.publish(group_pos)
+
         group_num_list = Float32MultiArray(data=sauce_input)
+        print("Group_num_list: ", group_num_list.data)
         group_num.publish(group_num_list)
-    # rospy.spin()
+
+if __name__=="__main__":
+    rospy.init_node('sauce_cmd')
+    rospy.Subscriber("/stt_cmd", Float32MultiArray, stt_callback, queue_size=1)
+    rospy.spin()
