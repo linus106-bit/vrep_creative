@@ -110,15 +110,28 @@ def listen_print_loop(responses):
                 sauce = a[0]
                 amount = a[1]
                 location = a[2]+' '+a[3][:-1]
-            elif len(a) == 2:
+            elif len(a) == 3:
                 automation = True
                 sauce = a[0]
             else:
                 pass
            
             if automation:
-                print("{} 자율모드로 배출합니다.".format(sauce))
-                # return sauce
+                print("소스의 종류 :", sauce)
+                print("소스 양 : 자율모드")
+                print("화구 위치 : 자율모드",'\n')
+                if sauce == "간장":
+                    saucepos = 1
+                elif sauce == "소금":
+                    saucepos = 2
+                elif sauce == "고추장":
+                    saucepos = 3
+                else:
+                    saucepos = 1
+                stt_data = [saucepos, int(rospy.get_param('stop_free')), 0]
+                stt_list = Float32MultiArray(data=stt_data)
+                stt_cmd.publish(stt_list)
+                print("ok")
             else:
                 print("소스의 종류 :", sauce)
                 print("소스 양 :", amount)
@@ -127,16 +140,17 @@ def listen_print_loop(responses):
                 V = amount[-2:]
                 location = float(location[0])
                 
+
                 if V == "그램":
                     weight = float(amount[:-2])
                     if sauce == "간장":
-                        saucepos = 1.0
+                        saucepos = 1
                     elif sauce == "소금":
-                        saucepos = 2.0
+                        saucepos = 2
                     elif sauce == "고추장":
-                        saucepos = 3.0
+                        saucepos = 3
                     else:
-                        saucepos = 1.0
+                        saucepos = 1
                 elif V == "큰술":
                     amount = amount[:-2]
                     volume = vol(amount, T)
@@ -153,9 +167,9 @@ def listen_print_loop(responses):
                     amount = amount[:-1]
                     volume = vol(amount, cup)
                     weight, saucepos = weightmeasure(sauce, volume)
-            stt_data = [saucepos, weight, location]
-            stt_list = Float32MultiArray(data=stt_data)
-            stt_cmd.publish(stt_list)
+                stt_data = [saucepos, weight, location]
+                stt_list = Float32MultiArray(data=stt_data)
+                stt_cmd.publish(stt_list)
 
 def main():
     language_code = "ko-KR"  # a BCP-47 language tag

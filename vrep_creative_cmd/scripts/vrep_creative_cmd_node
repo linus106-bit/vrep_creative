@@ -18,25 +18,66 @@ def stt_callback(input):
     lines = list(reader)
 
     group_num = rospy.Publisher('group_num',Float32MultiArray,queue_size=1)
-
-    print("Sauce Input: ", sauce_input)
-    if(len(sauce_input) == 0):
-        pass
-    else:
-        sauce_input.append(float(lines[0][3*int(sauce_input[2])-3]))
-        sauce_input.append(float(lines[0][3*int(sauce_input[2])-2]))
-        sauce_input.append(float(lines[0][3*int(sauce_input[2])-1]))
+    while not rospy.is_shutdown():
+        sauce_input = list(input.data)
+        if(len(sauce_input) == 0):
+            pass
+        elif(sauce_input[2] == 0):
+            sauce_input[1] = int(rospy.get_param('stop_free'))
+            sauce_input.append(float(lines[1][0]))
+            sauce_input.append(float(lines[1][1]))
+            sauce_input.append(float(lines[1][2]))
+        else:
+            sauce_input.append(float(lines[0][3*int(sauce_input[2])-3]))
+            sauce_input.append(float(lines[0][3*int(sauce_input[2])-2]))
+            sauce_input.append(float(lines[0][3*int(sauce_input[2])-1]))
+        group_num_list = Float32MultiArray(data=sauce_input)
+        group_num.publish(group_num_list)
+        print("Sauce Input: ", sauce_input)
         print("Sauce # : {}".format(sauce_input[0]))
         print("Sauce Weight: {}(g)".format(sauce_input[1]))
         print("Burner # : {}".format(sauce_input[2]))
         print("Target position : ({0}, {1})".format(sauce_input[3],sauce_input[4]))
-    while not rospy.is_shutdown():
-
-        group_num_list = Float32MultiArray(data=sauce_input)
-        print("Group_num_list: ", group_num_list.data)
-        group_num.publish(group_num_list)
-
 if __name__=="__main__":
     rospy.init_node('sauce_cmd')
     rospy.Subscriber("/stt_cmd", Float32MultiArray, stt_callback, queue_size=1)
     rospy.spin()
+
+'''
+rospack = rospkg.RosPack()
+
+# def sauce_callback(input):
+
+
+
+
+if __name__=="__main__":
+    rospy.init_node('sauce_cmd')
+    rospy.set_param('stop_free', 0)
+    sauce_pos = open(os.path.join(rospack.get_path("vrep_creative_description"), "position", "init_pos.csv"), 'r')
+    reader = csv.reader(sauce_pos)
+    lines = list(reader)
+    # group_pub = rospy.Publisher('group_pos',Point,queue_size=1)
+    group_num = rospy.Publisher('group_num',Float32MultiArray,queue_size=1)
+    group_pos = Point()
+    while not rospy.is_shutdown():
+        sauce_input = [1,15,0]
+        if(sauce_input[2] == 0):
+            sauce_input[1] = int(rospy.get_param('stop_free'))
+            print(sauce_input[1])
+            sauce_input.append(float(lines[1][0]))
+            sauce_input.append(float(lines[1][1]))
+            sauce_input.append(float(lines[1][2]))
+        else:
+            sauce_input.append(float(lines[0][3*sauce_input[2]-3]))
+            sauce_input.append(float(lines[0][3*sauce_input[2]-2]))
+            sauce_input.append(float(lines[0][3*sauce_input[2]-1]))
+        print("Sauce # : {}".format(sauce_input[0]))
+        print("Sauce Weight: {}(g)".format(sauce_input[1]))
+        print("Burner # : {}".format(sauce_input[2]))
+        print("Target position : ({0}, {1})".format(sauce_input[3],sauce_input[4]))
+            # group_pub.publish(group_pos) 
+        group_num_list = Float32MultiArray(data=sauce_input)
+        group_num.publish(group_num_list)
+        #rospy.spin()
+'''
